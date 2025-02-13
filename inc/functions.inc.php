@@ -2,6 +2,15 @@
 /* ------------ Constante pour défninir le chemin du site ------------ */
 define("RACINE_SITE", "http://localhost/cinema/");
 
+/* ------------ Fonction alert ------------ */
+function alert(string $contenu, string $class="warning") : string// type prend une classe bootstrap
+{
+    return "<div class=\"alert alert-$class alert-dismissible fade show text-center w-50 m-auto mb-5\" role=\"alert\">
+                $contenu
+            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+        </div>";
+}
+
 /* ------------- Création d'une fonction pour se connecter à la base de donnée -------------*/
 // On vas utiliser l'extension PHP Data Objects (PDO), elle définit une excellente interface pour accéder à une base de données depuis PHP et d'exécuter des requêtes SQL .
 // Pour se connecter à la BDD avec PDO il faut créer une instance de cet Objet (PDO) qui représente une connexion à la base,  pour cela il faut se servir du constructeur de la classe
@@ -82,5 +91,72 @@ $sql = "CREATE TABLE IF NOT EXISTS categories(id_categorie INT(11) NOT NULL PRIM
 };
 
 createTableCategories();
+
+//---------------- table films ----------------
+function createTableFilm():void 
+{
+     // creation d'une variable $conx pour stocker la connexion à la BDD
+     $conx = connexionBdd();
+
+$tableFilm = "CREATE TABLE IF NOT EXISTS film(id_film INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                              category_id INT(11) NOT NULL,
+                                              title VARCHAR (100) NOT NULL,
+                                              director VARCHAR (100) NOT NULL,
+                                              actors VARCHAR (100) NOT NULL,
+                                              ageLimit VARCHAR (5) NULL,
+                                              duration TIME NOT NULL,
+                                              synopsis TEXT NOT NULL,
+                                              date DATE NOT NULL,
+                                              image VARCHAR (250) NOT NULL,
+                                              price FLOAT NOT NULL,
+                                              stock BIGINT NOT NULL)";
+     $conx->exec($tableFilm); // la méthode exec() de l'objet $conx permet d'exécuter une requête SQL
+}
+//createTableFilm();
+
+
+
+// ---------------------- table users ----------------------
+function createTableUsers():void 
+{
+    // creation d'une variable $conx pour stocker la connexion à la BDD
+$conx = connexionBdd();
+//définition de la requête SQL
+$tableUsers = "CREATE TABLE IF NOT EXISTS users(id_user INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                              firstname VARCHAR(50),
+                                              lastname VARCHAR(50) NOT NULL,
+                                              pseudo VARCHAR(50) NOT NULL,
+                                              mdp VARCHAR(255) NOT NULL,
+                                              email VARCHAR(100) NOT NULL,
+                                             phone VARCHAR(30) NOT NULL,
+                                             civility ENUM('f','h') NOT NULL,
+                                             birthday DATE NOT NULL,
+                                             address VARCHAR (50) NOT NULL,
+                                             zip VARCHAR (50) NOT NULL,
+                                             city VARCHAR (50) NOT NULL,
+                                             country VARCHAR (50),
+                                              role ENUM('ROLE_USER','ROLE_ADMIN') NOT NULL DEFAULT 'ROLE_USER')";
+     $conx->exec($tableUsers); 
+}
+//createTableUsers();
+
+//---------------- création des clés étrangères ----------------
+function foreignkey(string $tableFK, string $keyFK, string $tablePK, string $keyPK):void
+{
+     $conx = connexionBdd();
+     // création de clé étrangère pour la table film sous-forme de fonction avec des arguments
+     // $tableF = nom de la table
+     // $keyFk = nom de la clé étrangère
+     // $keyPK = nom de la clé primaire
+     $sql = "ALTER TABLE $tableFK ADD FOREIGN KEY ($keyFK) REFERENCES $tablePK($keyPK)";
+     $conx->exec($sql);
+}
+//appel de la fonction de création de clé étrangère
+foreignkey('film', 'category_id', 'categories', 'id_categorie');
+
+
+
+
+
 
 ?>
