@@ -2,6 +2,20 @@
 /* ------------ Constante pour défninir le chemin du site ------------ */
 define("RACINE_SITE", "http://localhost/cinema/");
 
+session_start();
+
+#### Condition pour se déconnecter
+if (isset($_GET['action']) && $_GET['action'] === "deconnexion") {
+    // Soit on supprime la clé "user" de la session
+    // unset($_SESSION['user']);
+    // Soit on détruit la session $_SESSION
+    // session_destroy();
+    // La fonction session_destroy détruit toutes les données de la session déjà établie. Cette focntion détruit la sessio  sur le serveur.
+
+    //ca dépend de l'objectif du site. Dnas notre cas, c'est un site e-commerce qui va gérer des paniers utilisateur, donc on supprime la clé "user" de la session
+    unset($_SESSION['user']); // On supprime l'indice 'user' de la session pour s edéconnecter, cette fonction détruit les élément du tableau $_SESSION['user']
+    header("location:" . RACINE_SITE . "index.php");
+}
 /* ------------ Fonction alert ------------ */
 function alert(string $contenu, string $class="warning") : string// type prend une classe bootstrap
 {
@@ -30,7 +44,14 @@ define("DBPASS","");
 // // Constante pour le nom de la BDD
 define("DBNAME", "cinema");
 
+/* ------------------- Fonction pour débugger ------------------------------*/
 
+function debug ($var)
+{
+     echo '<pre class="border border-dark bg-light text-danger fw-bold w-50 p-5 mt-5">';
+     var_dump($var);
+     echo '</pre>';
+}
 
 
 
@@ -152,9 +173,167 @@ function foreignkey(string $tableFK, string $keyFK, string $tablePK, string $key
      $conx->exec($sql);
 }
 //appel de la fonction de création de clé étrangère
-foreignkey('film', 'category_id', 'categories', 'id_categorie');
+// foreignkey('film', 'category_id', 'categories', 'id_categorie');
+/*
+                          ╔═════════════════════════════════════════════╗
+                          ║                                             ║
+                          ║                UTILISATEURS                 ║
+                          ║                                             ║
+                          ╚═════════════════════════════════════════════╝ 
+                          
+*/
+
+// fonction pour ajouter un utilisateur
+function addUser (string $lastName, string $firstName, string $pseudo, string $email, string $phone, string $mdp, string $civility, string $birthday, string $address, string $zip, string $city, string $country):void
+{
+     //création d'un tableau associatif
+     $data = [
+          //key => value
+          'lastName' => $lastName,
+          'firstName' => $firstName,
+          'pseudo' => $pseudo,
+          'email' => $email,
+          'phone' => $phone,
+          'mdp' => $mdp,
+          'civility' => $civility,
+          'birthday' => $birthday,
+          'address' => $address,
+          'zip' => $zip,
+          'city' => $city,
+          'country' => $country
+     ];
+
+     //Echapper les données et les traiter contre les failles JS
+     foreach ($data as $key => $value) {
+          //htmlspecialchars() convertit les caractères spéciaux en entités HTML
+        // Exemple : < devient &lt; et > devient &gt;
+        // $data['lastName'] = htmlspecialchars($lastName);
+        $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); //ENT_QUOTES est une constante en PHP qui convertie les guillemets doubles et les guillemets simples en entités HTML. Exemple : la guillement simple se convertit en &#039; et la guillemet double se convertit en &quot;
+
+        /* 
+            htmlspecialchars est une fonction qui convertit les caractères spéciaux en entités HTML, cela est utilisé afin d'empêcher l'exécution de code HTML ou JavaScript : les attaques XSS (Cross-Site Scripting) injecté par un utilisateur malveillant en échappant les caractères HTML /////////////potentiellement dangereux . Par défaut, htmlspecialchars échappe les caractères suivants :
+
+            & (ampersand) devient &amp;
+            < (inférieur) devient &lt;
+            > (supérieur) devient &gt;
+            " (guillemet double) devient &quot;
+
+        */
+     }
+     //connextion à la base de données
+     $pdo = connexionBdd();
+     //définition de la requête SQL
+     $sql ="INSERT INTO users( lastName, firstName, pseudo, email, phone, mdp, civility, birthday, address, zip, city, country) VALUES (:lastName, :firstName, :pseudo, :email, :phone, :mdp, :civility, :birthday, :address, :zip, :city, :country)";
+     /* Les requêtes préparer sont préconisées si vous exécutez plusieurs fois la même requête. Ainsi vous évitez au SGBD de répéter toutes les phases analyse/ interpretation / exécution de la requête (gain de performance). Les requêtes préparées sont aussi utilisées pour nettoyer les données et se prémunir des injections de type SQL.
+
+        1- On prépare la requête
+        2- On lie le marqueur à la requête
+        3- On exécute la requête 
+
+    */
+    $request = $pdo->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :firstName qui est vide et attend une valeur.
+    $request->execute(array(
+     ':lastName'=>$data['lastName'],
+     ':firstName' => $data['firstName'],
+        ':pseudo' => $data['pseudo'],
+        ':email' => $data['email'],
+        ':phone' => $data['phone'],
+        ':mdp' => $data['mdp'],
+        ':civility' => $data['civility'],
+        ':birthday' => $data['birthday'],
+        ':address' => $data['address'],
+        ':zip' => $data['zip'],
+        ':city' => $data['city'],
+        ':country' => $data['country']
+    ));
+//execute() est une méthode qui permet d'exécuter la requête préparée. Elle prend en paramètre un tableau associatif qui contient les valeurs à injecter dans la requête.
+
+    // $request->execute($data); // cela ne fonctionne pas car les clés du tableau $data doivent être identiques aux marqueurs de la requête préparée
+}
+#### Fonction pour vérifier si l'email existe déjà
+function checkEmailUser(string $email): mixed
+{
+    $pdo = connexionBDD();
+    $sql = "SELECT email FROM users WHERE email = :email";
+    $request = $pdo->prepare($sql); // La flèche représente l'opérateur de résolution de portée qui permet d'accéder à une méthode ou une propriété d'un objet. Dans notre cas, on accède à la méthode prepare() de l'objet $pdo.
+    $request->bindValue(':email', $email, PDO::PARAM_STR);
+    $request->execute();
+    $result = $request->fetch();
+    return $result;
+
+    // $request = $pdo->query($sql); // query() est une méthode qui permet d'exécuter une requête SQL. Elle prend en paramètre la requête SQL à exécuter.
+    // $result = $request->fetch(); // fetch() est une méthode qui permet de récupérer le résultat de la requête sous forme de tableau associatif (clé => valeur)
+    // return $result;
+}
 
 
+#### Fonction pour vérifier si le pseudo existe déjà
+function checkPseudoUser(string $pseudo): mixed
+{
+    $pdo = connexionBDD();
+    $sql = "SELECT pseudo FROM users WHERE pseudo = :pseudo";
+    $request = $pdo->prepare($sql);
+    $request->bindValue(':pseudo', $pseudo, PDO::PARAM_STR);
+    $request->execute();
+    $result = $request->fetch();
+    return $result;
+}
+
+#### Fonction pour vérifier si l'email et le pseudo existent déjà
+function checkEmailPseudoUser($email, $pseudo): mixed
+{
+    $pdo = connexionBDD();
+    $sql = "SELECT * FROM users WHERE email = :email AND pseudo = :pseudo";
+    $request = $pdo->prepare($sql);
+    $request->bindValue(':email', $email, PDO::PARAM_STR); // bindValue permet de lier une valeur à un marqueur de requête préparée (marqueur :email) et de spécifier le type de données à lier (PDO::PARAM_STR) et de sécuriser les données.
+    $request->bindValue(':pseudo', $pseudo, PDO::PARAM_STR);
+    $request->execute();
+    $result = $request->fetch();
+    return $result;
+}
+
+#### Afficher tous les utilisateurs dans le dashboard
+function allUsers(): mixed
+{
+    $pdo = connexionBDD();
+    $sql = "SELECT * FROM users";
+    $request = $pdo->query($sql); // La méthode query permet d'exécuter une requête SQL. Elle prend en paramètre la requête SQL à exécuter.
+    $result = $request->fetchAll(); // La méthode fetchAll récupère toutes les lignes à la fois et les retourne sous forme de tableau associatif.
+    return $result;
+}
+
+#### Fonction pour mettre à jour le rôle de l'utilisateur
+
+function updateUserRole(int $id, string $role): void
+{
+    $pdo = connexionBDD();
+    $sql = "UPDATE users SET role = :role WHERE id_user = :id";
+    $request = $pdo->prepare($sql);
+    $request->bindValue(':role', $role, PDO::PARAM_STR);
+    $request->bindValue(':id', $id, PDO::PARAM_INT);
+    $request->execute();
+}
+
+
+function showUser(int $id): mixed
+{
+    $pdo = connexionBDD();
+    $sql = "SELECT * FROM users WHERE id_user = :id";
+    $request = $pdo->prepare($sql);
+    // $request->bindValue(':id', $id, PDO::PARAM_INT);
+    // $request->execute();
+    $request->execute(array(':id' => $id));
+    $result = $request->fetch();
+    return $result;
+}
+
+function deleteUser(int $id): void
+{
+    $cnx = connexionBdd();
+    $sql = "DELETE FROM users WHERE id_user = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(':id' => $id));
+}
 
 
 

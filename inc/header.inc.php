@@ -43,16 +43,29 @@
                             <li><a class="dropdown-item " href="#"></a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?=RACINE_SITE?>register.php">Inscription</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?=RACINE_SITE?>authentication.php">Connexion</a>
-                    </li>
+                    <?php
+                        // Si l'utilisateur n'est pas connecté, on affiche les liens d'inscription et de connexion
+                        if (!isset($_SESSION['user'])):
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= RACINE_SITE; ?>register.php">Inscription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= RACINE_SITE; ?>authentication.php">Connexion</a>
+                            </li>
+                        <?php
+                        endif;
+                        ?>
+                        <?php if (isset($_SESSION['user'])): ?><?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?=RACINE_SITE?>profile.php">Compte <sup class="badge rounded-pill text-bg-danger"></sup></a>
                     </li>
-                    <li class="nav-item dropdown">
+<!-- on craie une condition afin d'afficher le lien de back office seulement si l'utilisateur est connecté -->
+                            <?php
+                    if (isset($_SESSION['user']) && $_SESSION['user']['role'] == "ROLE_ADMIN"):
+                        ?>
+                       
+                        <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Backoffice</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item text-dark fs-4" href="<?=RACINE_SITE?>admin/categories.php">Catégories</a></li>
@@ -61,9 +74,18 @@
                             <li><a class="dropdown-item text-dark fs-4" href="<?=RACINE_SITE?>admin/users.php">utilisateurs</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=deconnexion">Déconnexion</a>
-                    </li>
+
+                    <?php
+                    endif;
+                    ?>
+
+                    <?php if (isset($_SESSION['user'])): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="?action=deconnexion">Déconnexion</a>
+                            </li>
+                    <?php endif; ?>
+                    <?php if (!isset($_SESSION['user'])): ?><?php endif; ?>
+
                     <li class="nav-item">
                         <a class="nav-link" href="<?=RACINE_SITE?>boutique/cart.php"><i class="bi bi-cart fs-2"><sup></sup></i></a>
                     </li>
