@@ -17,9 +17,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <!-- CSS -->
+    
+    <link rel="stylesheet" href="<?=RACINE_SITE?>assets/css/root.css" />
     <link rel="stylesheet" href="<?=RACINE_SITE?>assets/css/styles.css" />
-
     <title>Movies</title>
+
 </head>
 
 <body>
@@ -58,7 +60,7 @@
                         ?>
                         <?php if (isset($_SESSION['user'])): ?><?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?=RACINE_SITE?>profile.php">Compte <sup class="badge rounded-pill text-bg-danger"></sup></a>
+                        <a class="nav-link" href="<?=RACINE_SITE?>profil.php">Compte <sup class="badge rounded-pill text-bg-danger"></sup></a>
                     </li>
 <!-- on craie une condition afin d'afficher le lien de back office seulement si l'utilisateur est connecté -->
                             <?php

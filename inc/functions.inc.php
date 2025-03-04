@@ -336,6 +336,42 @@ function deleteUser(int $id): void
 }
 
 
+/*
+                          ╔═════════════════════════════════════════════╗
+                          ║                                             ║
+                          ║                CATEGORIES                   ║
+                          ║                                             ║
+                          ╚═════════════════════════════════════════════╝ 
+                          
+*/
+/*This is a PHP function named showCategories that retrieves a category from a database based on its name. It takes a string parameter $name, prepares and executes a SQL query to select all columns (*) from the categories table where the name column matches the input $name, and returns the result as a mixed type (e.g., an array or an object).
+*/
+function showCategories(string $name): mixed
+{
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM categories WHERE nom_categorie = :name";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":name" => $name
+    ));
+    $result = $request->fetch();
+    return $result;
+}
 
+function addCategory(string $name, string $description) : void
+{
+    //sécuriser les deux variables
+    $data = [
+        "name" => $name,
+        "description" => $description
+    ];
+    foreach ($data as $key => $value) {
+        $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    }
 
+    $cnx = connexionBDD();
+    $sql = "INSERT INTO categories (nom_categorie, description) VALUES (:name, :description)";
+    $request = $cnx->prepare($sql);
+    $request->execute($data);
+}
 ?>

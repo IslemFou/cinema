@@ -235,7 +235,7 @@ require_once("inc/header.inc.php");
             <div class="row mb-3">
                 <div class="col-12 mb-5">
                     <label for="address" class="form-label mb-3">Adresse</label>
-                    <input type="text" class="form-control fs-5" id="addressComplete" name="addressComplete">
+                    <input type="text" class="form-control fs-5" id="address" name="address">
                 </div>
             </div>
             <div class="row mb-3">

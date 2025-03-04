@@ -8,6 +8,11 @@ $users = allUsers();
 if (!isset($_SESSION['user'])) {
     // Si une session n'existe pas avec un identifiant utilisateur, je me redirige vers la page authentification.php
     header("location:" . RACINE_SITE . "authentication.php");
+
+} else {
+    if ($_SESSION['user']['role'] == "ROLE_USER"){
+        header("location:" . RACINE_SITE . "profil.php");
+    }
 }
 
 if (isset($_GET['action']) && isset($_GET['id'])) {
