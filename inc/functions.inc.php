@@ -80,7 +80,7 @@ function connexionBdd() : object
                //On définit le mode de "fetch" par défaut
                $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
           // je vérifie la connexion avec ma BDD avec un simple echo
-           echo "Je suis connecté à la BDD";
+        //    echo "Je suis connecté à la BDD";
      }
      catch(PDOException $e){  // PDOException est une classe qui représente une erreur émise par PDO et $e c'est l'objetde la clase en question qui vas stocker cette erreur
 
@@ -357,6 +357,17 @@ function showCategories(string $name): mixed
     $result = $request->fetch();
     return $result;
 }
+function showAllCategories(): mixed
+{
+    $cnx = connexionBDD();
+    $sql = "SELECT * FROM categories";
+    $request = $cnx->query($sql);
+    // query envoie la requête SQL vers la base de données
+    $result = $request->fetchAll();
+    return $result;
+}
+
+
 
 function addCategory(string $name, string $description) : void
 {
@@ -373,5 +384,14 @@ function addCategory(string $name, string $description) : void
     $sql = "INSERT INTO categories (nom_categorie, description) VALUES (:name, :description)";
     $request = $cnx->prepare($sql);
     $request->execute($data);
+}
+
+ 
+function deleteCategory(int $id): void
+{   
+    $cnx = connexionBdd();
+    $sql = "DELETE FROM categories WHERE id_categorie = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(':id' => $id));
 }
 ?>

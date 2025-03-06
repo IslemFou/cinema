@@ -1,6 +1,32 @@
 <?php
 require_once "../inc/functions.inc.php";
 $info = ""; //on déclare une variable vide
+$categories = showAllCategories();
+
+
+//session message
+if (isset($_SESSION['message']) && !empty($_SESSION['message']))
+{
+    $info = $_SESSION['message'];
+    unset($_SESSION['message']); 
+}
+
+
+
+// Supprimer catégorie
+if (isset($_GET['action']) && isset($_GET['id'])) {
+
+    $idCategory = htmlspecialchars($_GET['id']);
+    if (!empty($_GET['action']) && $_GET['action'] == "delete" && !empty($_GET['id'])) {
+        deleteCategory($idCategory);
+        $_SESSION['message'] = alert("Catégorie supprimée avec succès", "success");
+        // $info .= alert("Catégorie supprimée avec succès", "success");
+
+        header('location:categories.php'); // la redirection
+        exit; // quand il ya redirection, il faut mettre exit 
+    }
+}
+
 
 if (!isset($_SESSION['user'])) {
     // Si une session n'existe pas avec un identifiant utilisateur, je me redirige vers la page authentification.php
@@ -39,10 +65,11 @@ if (!empty($_POST)) {
             $categoryBdd = showCategories($name);
 
             if ($categoryBdd) {
-                $info = alert("Cette catégorie existe deja", "danger");
+                $info .= alert("Cette catégorie existe deja", "danger");
             } else {
                 //l'insertion de la categorie dans la base de données
                 addCategory($name, $description);
+                $info .= alert("Catégorie ajoutée avec succès", "success");
             }
         }
     }
@@ -51,10 +78,10 @@ if (!empty($_POST)) {
 require_once "../inc/header.inc.php";
 
 ?>
-<div class="row mt-5" style="padding-top: 8rem;">
+    <?= $info; ?>
+<div class="row mt-5">
     <div class="col-sm-12 col-md-6 mt-5">
         <h2 class="text-center fw-bolder mb-5 text-danger">Gestion des catégories</h2>
-<?= $info; ?>
 
 
        
@@ -82,10 +109,9 @@ require_once "../inc/header.inc.php";
     <div class="col-sm-12 col-md-6 d-flex flex-column mt-5 pe-3">  
        
         <h2 class="text-center fw-bolder mb-5 text-danger">Liste des catégories</h2>
-    
         
-      
        
+    
         <table class="table table-dark table-bordered mt-5 " >
             <thead>
                     <tr>
@@ -98,17 +124,19 @@ require_once "../inc/header.inc.php";
                     </tr>
             </thead>
             <tbody> 
-                
+            <?php
+       
+        foreach ($categories as $category): ?>
                         <tr>
-                            <td></td>
-                            <td></td> 
-                            <td></td> 
+                            <td><?= html_entity_decode($category['id_categorie']); ?></td>
+                            <td><?= ucfirst(html_entity_decode($category['nom_categorie'])); ?></td> 
+                            <td><?= substr(html_entity_decode($category['description']), 0,150 )." ..."; ?></td>
                             
-                            <td class="text-center"><a href=""><i class="bi bi-trash3-fill"></i></a></td>
+                            <td class="text-center"><a href="categories.php?action=delete&id=<?=$category['id_categorie'];?>"><i class="bi bi-trash3-fill"></i></a></td>
                             <td class="text-center"><a href=""><i class="bi bi-pen-fill"></i></a></td>
                             
                         </tr>
-               
+               <?php endforeach; ?>
 
             </tbody>
 

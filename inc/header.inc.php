@@ -42,7 +42,11 @@
                             Catégories
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item " href="#"></a></li>
+                            <?php 
+                            $categories = showAllCategories();
+                            foreach ($categories as $category):?>
+                            <li><a class="dropdown-item text-dark fs-4" href="#"><?= ucfirst(html_entity_decode($category['nom_categorie'])); ?></a></li>
+                            <?php endforeach; ?>
                         </ul>
                     </li>
                     <?php
