@@ -5,8 +5,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Premier site en PHP : site cinema">
-    <meta name="author" content="SaharMahdouani">
+    <meta name="description" content="cours PHP : site cinema">
+    <meta name="author" content="projet by : SaharMahdouani">
     <!-- Bootstrap CSS v5.2.1 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!--  icone bootstrap -->
@@ -43,6 +43,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <?php 
+                            // On récupère toutes les catégories dans le menu déroulant
                             $categories = showAllCategories();
                             foreach ($categories as $category):?>
                             <li><a class="dropdown-item text-dark fs-4" href="#"><?= ucfirst(html_entity_decode($category['nom_categorie'])); ?></a></li>

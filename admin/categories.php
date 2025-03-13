@@ -28,6 +28,43 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 }
 
 
+
+// Suppression et mofification d'une catégorie
+
+if (isset($_GET) && isset($_GET['action']) &&  isset($_GET['id_category']) && !empty($_GET['action']) && !empty($_GET['id_category'])) {
+
+
+    $idCategory = htmlentities($_GET['id_category']);
+  
+  
+    if (is_numeric($idCategory)) {
+  
+      $categorie = showCategoryViaId($idCategory);
+  
+      if ($categorie) {
+  // if $categorie is true
+
+  // la suppression
+        // if ($_GET['action'] == 'delete') {
+  
+        //     deleteCategory($idCategory);
+  
+        // }
+        if ($_GET['action'] != 'update') {
+  
+          header('location:categories.php');
+        }
+      } else {
+  
+        header('location:categories.php');
+      }
+    } else {
+  
+      header('location:categories.php');
+    }
+  }
+  
+
 if (!isset($_SESSION['user'])) {
     // Si une session n'existe pas avec un identifiant utilisateur, je me redirige vers la page authentification.php
     header("location:" . RACINE_SITE . "authentication.php");
@@ -37,6 +74,8 @@ if (!isset($_SESSION['user'])) {
         header("location:" . RACINE_SITE . "profil.php");
     }
 }
+
+
 
 // pour vérifier si notre formulaire n'est pas vide
 if (!empty($_POST)) {
@@ -71,9 +110,15 @@ if (!empty($_POST)) {
                 addCategory($name, $description);
                 $info .= alert("Catégorie ajoutée avec succès", "success");
             }
+            if (isset($_GET['action']) && isset($_GET['id']) && !empty($_GET['action']) && $_GET['action'] == "update" && !empty($_GET['id'])) {
+                $id = htmlspecialchars($_GET['id']); 
+                updateCategory($id,$name,$description);
+                $info .= alert("Catégorie modifiée avec succès", "success");
         }
     }
 }
+}
+
 
 require_once "../inc/header.inc.php";
 
@@ -82,26 +127,24 @@ require_once "../inc/header.inc.php";
 <div class="row mt-5">
     <div class="col-sm-12 col-md-6 mt-5">
         <h2 class="text-center fw-bolder mb-5 text-danger">Gestion des catégories</h2>
-
-
-       
         <form action="" method="post" class="back">
-
+            
             <div class="row">
                 <div class="col-md-8 mb-5">
                     <label for="name" class="text-light">Nom de la catégorie</label>
              
-                    <input type="text" id="name" name="name" class="form-control" value=""> 
+                    <input type="text" id="name" name="name" class="form-control" value="<?= htmlspecialchars($categorie['nom_categorie'] ?? '') ?>"> 
+                    <!-- ?? est une condition ternaire qui signifie elseif  -->
                  
                 </div>
                 <div class="col-md-12 mb-5">
                     <label for="description" class="text-light">Description</label>
-                    <textarea id="description"  name="description" class="form-control" rows="10"></textarea>
+                    <textarea id="description"  name="description" class="form-control" rows="10"><?= isset($categorie) ? $categorie['description'] : '' ?></textarea>
+                    <!-- Ici on a vérifié si $catégory n'est pas vide après une condition ternaire  -->
                 </div>
-
             </div>
             <div class="row justify-content-center">
-                <button type="submit" class="btn btn-danger p-3">Ajouter une categorie</button>
+                    <button type="submit" class="btn btn-danger p-3"><?= isset($categorie) ? 'Modifier une catégorie' : ' Ajouter une catégorie' ?></button>
             </div>
         </form>
     </div>
@@ -125,15 +168,15 @@ require_once "../inc/header.inc.php";
             </thead>
             <tbody> 
             <?php
-       
+    //    Ici on va afficher les catégories dans un tableau avec une boucle foreach
         foreach ($categories as $category): ?>
                         <tr>
                             <td><?= html_entity_decode($category['id_categorie']); ?></td>
                             <td><?= ucfirst(html_entity_decode($category['nom_categorie'])); ?></td> 
                             <td><?= substr(html_entity_decode($category['description']), 0,150 )." ..."; ?></td>
                             
-                            <td class="text-center"><a href="categories.php?action=delete&id=<?=$category['id_categorie'];?>"><i class="bi bi-trash3-fill"></i></a></td>
-                            <td class="text-center"><a href=""><i class="bi bi-pen-fill"></i></a></td>
+                            <td class="text-center"><a href="categories.php?action=delete&id=<?=$category['id_categorie'];?>" onclick="return(confirm('Êtes-vous sûr de vouloir supprimer cette categorie ?'))" ><i class="bi bi-trash3-fill"></i></a></td>
+                            <td class="text-center"><a href="?action=update&id_category=<?= $category['id_categorie'] ?>"><i class="bi bi-pen-fill"></i></a></td>
                             
                         </tr>
                <?php endforeach; ?>

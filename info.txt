@@ -1,0 +1,23 @@
+Connexion Islem
+
+pseudo: islema
+email: islem.fourati@colombbus.org
+pw: TESTcinema2025**
+
+
+Syntaxe :
+** Lorsqu'on met : il faut écrire endforeach
+foreach ($categories as $category):?>
+                            ...
+                            <?php endforeach; ?>
+
+
+######## Pour faire le update:
+1- il faut récupérer d'abord
+il faut envoyer les données dans l'URL ett savoir quel id q'oon a et quel id récupérer
+2- modification du bouton stylo
+Pour envoyer des info dans l'url, --> allez vers la href de la balise a et insérer l'url avec l'action update
+3- Pour les fonctions : il ya deux fonctions show et update
+4-dans la page categorie: 
+faire des vérifications : category ? ...
+...

@@ -253,7 +253,7 @@ function addUser (string $lastName, string $firstName, string $pseudo, string $e
 #### Fonction pour vérifier si l'email existe déjà
 function checkEmailUser(string $email): mixed
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "SELECT email FROM users WHERE email = :email";
     $request = $pdo->prepare($sql); // La flèche représente l'opérateur de résolution de portée qui permet d'accéder à une méthode ou une propriété d'un objet. Dans notre cas, on accède à la méthode prepare() de l'objet $pdo.
     $request->bindValue(':email', $email, PDO::PARAM_STR);
@@ -270,7 +270,7 @@ function checkEmailUser(string $email): mixed
 #### Fonction pour vérifier si le pseudo existe déjà
 function checkPseudoUser(string $pseudo): mixed
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "SELECT pseudo FROM users WHERE pseudo = :pseudo";
     $request = $pdo->prepare($sql);
     $request->bindValue(':pseudo', $pseudo, PDO::PARAM_STR);
@@ -282,7 +282,7 @@ function checkPseudoUser(string $pseudo): mixed
 #### Fonction pour vérifier si l'email et le pseudo existent déjà
 function checkEmailPseudoUser($email, $pseudo): mixed
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "SELECT * FROM users WHERE email = :email AND pseudo = :pseudo";
     $request = $pdo->prepare($sql);
     $request->bindValue(':email', $email, PDO::PARAM_STR); // bindValue permet de lier une valeur à un marqueur de requête préparée (marqueur :email) et de spécifier le type de données à lier (PDO::PARAM_STR) et de sécuriser les données.
@@ -295,7 +295,7 @@ function checkEmailPseudoUser($email, $pseudo): mixed
 #### Afficher tous les utilisateurs dans le dashboard
 function allUsers(): mixed
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "SELECT * FROM users";
     $request = $pdo->query($sql); // La méthode query permet d'exécuter une requête SQL. Elle prend en paramètre la requête SQL à exécuter.
     $result = $request->fetchAll(); // La méthode fetchAll récupère toutes les lignes à la fois et les retourne sous forme de tableau associatif.
@@ -306,7 +306,7 @@ function allUsers(): mixed
 
 function updateUserRole(int $id, string $role): void
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "UPDATE users SET role = :role WHERE id_user = :id";
     $request = $pdo->prepare($sql);
     $request->bindValue(':role', $role, PDO::PARAM_STR);
@@ -317,7 +317,7 @@ function updateUserRole(int $id, string $role): void
 
 function showUser(int $id): mixed
 {
-    $pdo = connexionBDD();
+    $pdo = connexionBdd();
     $sql = "SELECT * FROM users WHERE id_user = :id";
     $request = $pdo->prepare($sql);
     // $request->bindValue(':id', $id, PDO::PARAM_INT);
@@ -348,7 +348,7 @@ function deleteUser(int $id): void
 */
 function showCategories(string $name): mixed
 {
-    $cnx = connexionBDD();
+    $cnx = connexionBdd();
     $sql = "SELECT * FROM categories WHERE nom_categorie = :name";
     $request = $cnx->prepare($sql);
     $request->execute(array(
@@ -359,7 +359,7 @@ function showCategories(string $name): mixed
 }
 function showAllCategories(): mixed
 {
-    $cnx = connexionBDD();
+    $cnx = connexionBdd();
     $sql = "SELECT * FROM categories";
     $request = $cnx->query($sql);
     // query envoie la requête SQL vers la base de données
@@ -380,7 +380,7 @@ function addCategory(string $name, string $description) : void
         $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
     }
 
-    $cnx = connexionBDD();
+    $cnx = connexionBdd();
     $sql = "INSERT INTO categories (nom_categorie, description) VALUES (:name, :description)";
     $request = $cnx->prepare($sql);
     $request->execute($data);
@@ -394,4 +394,34 @@ function deleteCategory(int $id): void
     $request = $cnx->prepare($sql);
     $request->execute(array(':id' => $id));
 }
+
+function showCategoryViaId(int $id) :mixed{
+
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM categories WHERE id_categorie = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":id" => $id
+    ));
+    $result = $request->fetch();
+    return $result;
+  
+  }
+  
+
+function updateCategory(int $id, string $name, string $description): void
+{
+    $cnx = connexionBdd();
+    $sql ="UPDATE categories SET nom_categorie = :name, description = :description WHERE id_categorie = :id";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":name" => $name,
+        ":description" => $description,
+        ":id" => $id
+    ));
+}
+
+
+
 ?>
+
