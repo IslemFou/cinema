@@ -10,31 +10,9 @@ if (!isset($_SESSION['user'])) {
     }
 }
 
-// Insertion des films
-if (isset($_GET['action']) && isset($_GET['id'])) {
-    $idFilm = htmlspecialchars($_GET['id']);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
+//Déclaration des variables
+$films = allFilm();
+$info = "";
 
 require_once "../inc/header.inc.php";
 
@@ -45,7 +23,7 @@ echo $info;
 <div class="d-flex flex-column m-auto mt-5">
     
     <h2 class="text-center fw-bolder mb-5 text-danger">Liste des films</h2>
-    <a href="gestion_film.php" class="btn align-self-end"> Ajouter un film</a>
+    <a href="filmForm.php" class="btn align-self-end"> Ajouter un film</a>
     <table class="table table-dark table-bordered mt-5 " >
             <thead>
                     <tr >
@@ -68,33 +46,39 @@ echo $info;
             </thead>
             <tbody>
 
-              
+              <?php
+              foreach ($films as $film):
+              ?>
                         <tr>
 
                             <!-- Je récupére les valeus de mon tabelau $film dans des td -->
-                            <td></td>
-                            <td> </td>
-                            <td> <img src="" alt="affiche du film" class="img-fluid"></td>
-                            <td> </td>
+                            <td><?= html_entity_decode($film['id_film']) ?></td>
+                            <td><?= html_entity_decode($film['title']) ?> </td>
+                            <td><img src="../assets/img/films/<?= html_entity_decode($film['image']) ?> " alt="affiche du film" class="img-fluid"></td>
+                            <td><?= html_entity_decode($film['director']) ?> </td>
                             <td> 
                                 <ul>
-                                
-                                    <li></li>
+                                <?php
+                                $TabActors = explode ("/",$film['actors']); // création de tableau actors à partir d'une string
+                                foreach ($TabActors as $actor):
+                                ?>
+                                    <li><?= ucfirst(html_entity_decode($actor)) ?></li>
                           
-                               
+                               <?php endforeach; ?>
                                 </ul>
                             </td>
-                            <td> </td>
-                            <td> </td>
-                            <td></td>
-                            <td> €</td>
-                            <td> </td>
-                            <td> ...</td>
-                            <td> </td>
+                            <td><?= html_entity_decode($film['ageLimit']) ?>  </td>
+                            <td> <?= html_entity_decode($film['genre']) ?> </td>
+                            <td><?= html_entity_decode($film['date']) ?></td>
+                            <td><?= html_entity_decode($film['price']) ?>€</td>
+                            <td><?= html_entity_decode($film['stock']) ?> </td>
+                            <td> <?= html_entity_decode($film['synopsis']) ?>...</td>
+                            <td> <?= html_entity_decode($film['date'])?> </td>
                             <td class="text-center"><a href=""><i class="bi bi-trash3-fill"></i></a></td>
                             <td class="text-center"><a href=""><i class="bi bi-pen-fill"></i></a></td>
                            
                         </tr>
+                        <?php endforeach; ?>
             </tbody>
     </table>
 </div>

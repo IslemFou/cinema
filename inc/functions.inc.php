@@ -486,6 +486,30 @@ function checkFilm($title, $director): mixed
     return $result;
 }
 
+//
+function allFilm(): mixed
+{
+    $pdo = connexionBdd();
+    $sql = "SELECT 
+    id_film, 
+    categories.nom_categorie AS genre,
+    title,
+    director,
+    actors,
+    ageLimit,
+    duration,
+    synopsis,
+    date,
+    image,
+    price,
+    stock
+    FROM film
+    INNER JOIN categories ON film.category_id = categories.id_categorie";
+    $request = $pdo->prepare($sql);
+    $request->execute();
+    $result = $request->fetchAll();
+    return $result;
+}
 
 
 ?>
