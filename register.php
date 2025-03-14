@@ -77,9 +77,6 @@ if (!empty($_POST)) {
 
         $yearMin = ((int)date('Y')) - 13; // 2012
         $yearMax = ((int)date('Y')) - 90; // 1935
-        // var_dump($yearMin);
-        // var_dump($yearMax);
-        // vérification de la date de naissance
         // Vérification de la date de naissance
         if (!isset($_POST['birthday'])) {
             $info .= alert("La date de naissance n'est pas valide", "danger");

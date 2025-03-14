@@ -395,6 +395,10 @@ function deleteCategory(int $id): void
     $request->execute(array(':id' => $id));
 }
 
+
+##### Update category
+//on a crée au début une fonction showCategoryViaId qui permet de recuperer la category via son id et on a crée une autre fonction updateCategory qui permet de modifier la category
+
 function showCategoryViaId(int $id) :mixed{
 
     $cnx = connexionBdd();
@@ -408,7 +412,7 @@ function showCategoryViaId(int $id) :mixed{
   
   }
   
-
+//on a crée une autre fonction updateCategory qui permet de modifier la category via son id 
 function updateCategory(int $id, string $name, string $description): void
 {
     $cnx = connexionBdd();
@@ -419,6 +423,67 @@ function updateCategory(int $id, string $name, string $description): void
         ":description" => $description,
         ":id" => $id
     ));
+}
+/*
+                          ╔═════════════════════════════════════════════╗
+                          ║                                             ║
+                          ║                FILM                         ║
+                          ║                                             ║
+                          ╚═════════════════════════════════════════════╝ 
+                          
+*/
+// fonction pour l'insertion d un film auprès de l'utilisateur
+function addFilm (int $categories, string $title, string $director, string $actors, string $ageLimit,string $duration, string $synopsis, string $date, string $image, float $price, int $stock):void
+{
+     //création d'un tableau associatif
+     $data = [
+          //key => value
+          'categories' => $categories,
+          'title' => $title,
+          'image' => $image,
+          'director' => $director,
+          'actors' => $actors,
+          'ageLimit' => $ageLimit,
+          'duration'=> $duration,
+          'date' => $date,
+          'price' => $price,    
+          'stock' => $stock,
+          'synopsis' => $synopsis
+     ];
+
+     //Echapper les données et les traiter contre les failles JS
+     foreach ($data as $key => $value) {
+        $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); //ENT_QUOTES est une constante en PHP qui convertie les guillemets doubles et les guillemets simples en entités HTML. Exemple : la guillement simple se convertit en &#039; et la guillemet double se convertit en &quot;
+     }
+     //connextion à la base de données
+     $pdo = connexionBdd();
+     $sql ="INSERT INTO film ( category_id, title, director, actors, ageLimit, duration, synopsis, date, image,  price, stock) VALUES (:category_id, :title, :director, :actors, :ageLimit, :duration, :synopsis, :date, :image, :price, :stock)";
+    $request = $pdo->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :firstName qui est vide et attend une valeur.
+    $request->execute(array(
+     ':category_id'=>$data['categories'],
+    ':title'=>$data['title'],
+     ':director'=>$data['director'],
+     ':actors'=>$data['actors'],
+     ':ageLimit'=>$data['ageLimit'],
+     ':duration'=>$data['duration'],
+     ':synopsis'=>$data['synopsis'],
+     ':date'=>$data['date'],
+     ':image'=>$data['image'],
+     ':price'=>$data['price'],
+     ':stock'=>$data['stock'],
+    ));
+}
+
+function checkFilm($title, $director): mixed
+{
+    $pdo = connexionBdd();
+    $sql = "SELECT * FROM film WHERE title = :title AND director = :director";
+    $request = $pdo->prepare($sql);
+    $request->bindValue(':title', $title, PDO::PARAM_STR); // bindValue permet de lier une valeur à un marqueur de requête préparée (marqueur :email) et de spécifier le type de données à lier (PDO::PARAM_STR) et de sécuriser les données.
+    $request->bindValue(':director', $director, PDO::PARAM_STR);
+    $request->execute();
+    $result = $request->fetch();
+    return $result;
 }
 
 

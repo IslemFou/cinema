@@ -15,6 +15,10 @@ if (!isset($_SESSION['user'])) {
     }
 }
 
+// Insertion des utilisateurs
+
+
+
 if (isset($_GET['action']) && isset($_GET['id'])) {
     $idUser = htmlspecialchars($_GET['id']);
     if (!empty($_GET['action']) && $_GET['action'] == "update" && !empty($_GET['id'])) {
