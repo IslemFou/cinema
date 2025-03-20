@@ -14,6 +14,10 @@ if (!isset($_SESSION['user'])) {
 $films = allFilm();
 $info = "";
 
+
+
+
+
 require_once "../inc/header.inc.php";
 
 ?>
@@ -75,8 +79,9 @@ echo $info;
                             <td> <?= html_entity_decode($film['synopsis']) ?>...</td>
                             <td> <?= html_entity_decode($film['date'])?> </td>
                             <td class="text-center"><a href=""><i class="bi bi-trash3-fill"></i></a></td>
-                            <td class="text-center"><a href=""><i class="bi bi-pen-fill"></i></a></td>
-                           
+                            <td class="text-center"><a href="filmForm.php?action=update&id_film=<?=$film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
+                          <!-- renvoie vers la page filmForm.php + action = update id = 1 -->
+                            <!-- Pour modifier les info du film, on insère le href + code php qui prend l'id du film en paramètres : on a deux paramètre [action]= update [id]= 1 et renvoie ça dans un URL car on est dans a-->
                         </tr>
                         <?php endforeach; ?>
             </tbody>

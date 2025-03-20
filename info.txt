@@ -21,3 +21,7 @@ Pour envoyer des info dans l'url, --> allez vers la href de la balise a et insé
 4-dans la page categorie: 
 faire des vérifications : category ? ...
 ...
+
+
+
+<?= isset($) ? 'Modifier le film' : ' Ajouter un film' ?>

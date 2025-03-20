@@ -512,5 +512,60 @@ function allFilm(): mixed
 }
 
 
+//update film
+function updateFilm(int $id, int $category_id, string $title, string $director, string $actors, string $ageLimit,string $duration, string $synopsis, string $date, string $image, float $price, int $stock) : void 
+{
+    $cnx = connexionBdd();
+    $sql ="UPDATE film SET 
+    category_id = :category_id,
+    title = :title, 
+    director =:director,
+    actors = :actors,
+    ageLimit = :ageLimit,
+    duration = :duration,
+    synopsis = :synopsis,
+    date = :date,
+    image = :image,
+    price = :price,
+    stock = :stock
+    WHERE id_film = :id_film";
+
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':category_id' => $category_id,
+        ':title' => $title,
+        ':director' => $director,
+        ':actors' => $actors,
+        ':ageLimit' => $ageLimit,
+        ':duration' => $duration,
+        ':synopsis' => $synopsis,
+        ':date' => $date,
+        ':image' => $image,
+        ':price' => $price,
+        ':stock' => $stock,
+        ':id_film' => $id
+    ));
+}
+
+//show film
+function showFilm(int $id_film): mixed
+{
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM film
+    WHERE id_film = :id_film
+    ";
+    $request = $cnx->prepare($sql);
+    // query envoie la requête SQL vers la base de données
+    $request->execute(array(
+        ":id_film" => $id_film
+    ));
+    $result = $request->fetch();
+    return $result;
+}
+
+
+
+
+
 ?>
 

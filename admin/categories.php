@@ -101,6 +101,7 @@ if (!empty($_POST)) {
             $name = trim(htmlspecialchars($_POST['name']));
             $description = trim(htmlspecialchars($_POST['description']));
             // creation d'une variable $catégoryBdd qui prend une fonction
+            //show all categories
             $categoryBdd = showCategories($name);
 
             if ($categoryBdd) {
