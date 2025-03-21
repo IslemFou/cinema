@@ -165,7 +165,7 @@ if (isset($_GET['action'])  && isset($_GET['id_film']) && $_GET['action'] == "up
 {
     //récupération de l'id qui est dans l'URL au niveau d'une variable
     $idFilm = $_GET['id_film'];
-    $film = showFilm($idFilm);
+    // $film = showFilm($idFilm);
     
    
         $titleUpdate = $film['title'];
@@ -297,7 +297,7 @@ require_once("../inc/header.inc.php");
 
         <div class="row justify-content-center">
             <button type="submit" class="btn btn-danger p-3 w-25">  
-            <?= $submit ?? "Ajouter un film" ?>
+            <?= $submitUpdate ?? "Ajouter un film" ?>
         </button>
         </div>
 

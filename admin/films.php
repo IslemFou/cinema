@@ -15,8 +15,15 @@ $films = allFilm();
 $info = "";
 
 
-
-
+// debug($_GET);
+// Delete film on trash icon click
+if (isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["id_film"])) {
+    $id_film = $_GET["id_film"];
+    deleteFilm($id_film);
+    $_SESSION['info'] = alert("Film deleted successfully!", "success");
+    header("Location:films.php");
+  }
+  
 
 require_once "../inc/header.inc.php";
 
@@ -78,8 +85,8 @@ echo $info;
                             <td><?= html_entity_decode($film['stock']) ?> </td>
                             <td> <?= html_entity_decode($film['synopsis']) ?>...</td>
                             <td> <?= html_entity_decode($film['date'])?> </td>
-                            <td class="text-center"><a href=""><i class="bi bi-trash3-fill"></i></a></td>
-                            <td class="text-center"><a href="filmForm.php?action=update&id_film=<?=$film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
+                            <td class="text-center"><a href="films.php?action=delete&id_film=<?= $film['id_film']; ?>" onclick="return(confirm('Êtes-vous sûr de vouloir supprimer ce film ?'))" ><i class="bi bi-trash3-fill"></i></a></td>
+                            <td class="text-center"><a href="filmForm2.php?action=update&id_film=<?=$film['id_film'] ?>"><i class="bi bi-pen-fill"></i></a></td>
                           <!-- renvoie vers la page filmForm.php + action = update id = 1 -->
                             <!-- Pour modifier les info du film, on insère le href + code php qui prend l'id du film en paramètres : on a deux paramètre [action]= update [id]= 1 et renvoie ça dans un URL car on est dans a-->
                         </tr>

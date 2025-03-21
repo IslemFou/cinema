@@ -30,6 +30,10 @@ body {
 nav {
   background-color: #ffffff !important;
   margin-bottom: 5rem !important;
+
+  .fixed-top {
+    z-index: 1;
+  }
 }
 
 h1 {

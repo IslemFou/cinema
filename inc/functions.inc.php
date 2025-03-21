@@ -17,7 +17,7 @@ if (isset($_GET['action']) && $_GET['action'] === "deconnexion") {
     header("location:" . RACINE_SITE . "index.php");
 }
 /* ------------ Fonction alert ------------ */
-function alert(string $contenu, string $class="warning") : string// type prend une classe bootstrap
+function alert(string $contenu, string $class = "warning"): string // type prend une classe bootstrap
 {
     return "<div class=\"alert alert-$class alert-dismissible fade show text-center w-50 m-auto mb-5\" role=\"alert\">
                 $contenu
@@ -36,21 +36,22 @@ function alert(string $contenu, string $class="warning") : string// type prend u
 define("DBHOST", "localhost");
 
 // // constante de l'utilisateur de la BDD du serveur en local => root
-define("DBUSER","root");
+define("DBUSER", "root");
 
 // // constante pour le mot de passe de serveur en local => pas de mot de passe
-define("DBPASS",""); 
+define("DBPASS", "");
 
 // // Constante pour le nom de la BDD
 define("DBNAME", "cinema");
 
 /* ------------------- Fonction pour débugger ------------------------------*/
 
-function debug ($var)
+function debug($var)
 {
-     echo '<pre class="border border-dark bg-light text-danger fw-bold w-50 p-5 mt-5">';
-     var_dump($var);
-     echo '</pre>';
+    echo '<pre class="border border-dark bg-light text-danger fw-bold w-50 p-5 bottom-50 start-50 position-absolute z-10
+     bg-body-secondary translate-middle">';
+    var_dump($var);
+    echo '</pre>';
 }
 
 
@@ -62,34 +63,33 @@ Création d'une fonction pour se connecter à la base de donnée
 --------------------------------
 */
 
-function connexionBdd() : object 
+function connexionBdd(): object
 {
-//DSN (Data Source Name):
-//$dsn = mysql:host=localhost;dbname=entreprise;charset=utf8;
- $dsn = "mysql:host=".DBHOST.";dbname=".DBNAME.";charset=utf8";
+    //DSN (Data Source Name):
+    //$dsn = mysql:host=localhost;dbname=entreprise;charset=utf8;
+    $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
 
-//Grâce à PDP on peut lever une exception (une erreur) si la connexion à la BDD ne se réalise pas(exp: suite à une faute au niveau du nom de la BDD) et par la suite si elle cette erreur est capté on lui demande d'afficher une erreur
+    //Grâce à PDP on peut lever une exception (une erreur) si la connexion à la BDD ne se réalise pas(exp: suite à une faute au niveau du nom de la BDD) et par la suite si elle cette erreur est capté on lui demande d'afficher une erreur
 
-     try{ // dans le try on vas instancier PDO, c'est créer un objet de la classe PDO (un élment de PDO)
-          // Sans la variable dsn les constatntes d'environnement
-          // $pdo = new PDO('mysql:host=localhost;dbname=entreprise;charset=utf8','root','');
-           $pdo = new PDO($dsn, DBUSER, DBPASS); 
-          //On définit le mode d'erreur de PDO sur Exception
-          $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          // POUR SAHAR:  cet atribut est à rajouter après le premier fetch en bas 
-               //On définit le mode de "fetch" par défaut
-               $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
-          // je vérifie la connexion avec ma BDD avec un simple echo
+    try { // dans le try on vas instancier PDO, c'est créer un objet de la classe PDO (un élment de PDO)
+        // Sans la variable dsn les constatntes d'environnement
+        // $pdo = new PDO('mysql:host=localhost;dbname=entreprise;charset=utf8','root','');
+        $pdo = new PDO($dsn, DBUSER, DBPASS);
+        //On définit le mode d'erreur de PDO sur Exception
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // POUR SAHAR:  cet atribut est à rajouter après le premier fetch en bas 
+        //On définit le mode de "fetch" par défaut
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        // je vérifie la connexion avec ma BDD avec un simple echo
         //    echo "Je suis connecté à la BDD";
-     }
-     catch(PDOException $e){  // PDOException est une classe qui représente une erreur émise par PDO et $e c'est l'objetde la clase en question qui vas stocker cette erreur
+    } catch (PDOException $e) {  // PDOException est une classe qui représente une erreur émise par PDO et $e c'est l'objetde la clase en question qui vas stocker cette erreur
 
-          die("Erreur : " .$e->getMessage()); // die d'arrêter le PHP et d'afficher une erreur en utilisant la méthode getmessage de l'objet $e
-     }
-     return $pdo ; // on retourne la connexion à la BDD , un objet 
+        die("Erreur : " . $e->getMessage()); // die d'arrêter le PHP et d'afficher une erreur en utilisant la méthode getmessage de l'objet $e
     }
+    return $pdo; // on retourne la connexion à la BDD , un objet 
+}
 
-     //le catch sera exécuter dès lors on aura un problème da le try
+//le catch sera exécuter dès lors on aura un problème da le try
 
 // À partir d'ici on est connecté à la BDD et la variable $pdo est l'objet qui représente la connexion à la BDD, cette variable va nous servir à effectuer les requêtes SQL et à interroger la base de données 
 // debug($pdo);
@@ -98,12 +98,12 @@ function connexionBdd() : object
 
 
 // ---------------------- table categories ----------------------
-function createTableCategories():void 
+function createTableCategories(): void
 {
     // creation d'une variable $conx pour stocker la connexion à la BDD
-$conx = connexionBdd();
-//définition de la requête SQL
-$sql = "CREATE TABLE IF NOT EXISTS categories(id_categorie INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    $conx = connexionBdd();
+    //définition de la requête SQL
+    $sql = "CREATE TABLE IF NOT EXISTS categories(id_categorie INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                               nom_categorie VARCHAR(50) NOT NULL,
                                               description TEXT NOT NULL
                                               )";
@@ -114,12 +114,12 @@ $sql = "CREATE TABLE IF NOT EXISTS categories(id_categorie INT(11) NOT NULL PRIM
 createTableCategories();
 
 //---------------- table films ----------------
-function createTableFilm():void 
+function createTableFilm(): void
 {
-     // creation d'une variable $conx pour stocker la connexion à la BDD
-     $conx = connexionBdd();
+    // creation d'une variable $conx pour stocker la connexion à la BDD
+    $conx = connexionBdd();
 
-$tableFilm = "CREATE TABLE IF NOT EXISTS film(id_film INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    $tableFilm = "CREATE TABLE IF NOT EXISTS film(id_film INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                               category_id INT(11) NOT NULL,
                                               title VARCHAR (100) NOT NULL,
                                               director VARCHAR (100) NOT NULL,
@@ -131,19 +131,19 @@ $tableFilm = "CREATE TABLE IF NOT EXISTS film(id_film INT(11) NOT NULL PRIMARY K
                                               image VARCHAR (250) NOT NULL,
                                               price FLOAT NOT NULL,
                                               stock BIGINT NOT NULL)";
-     $conx->exec($tableFilm); // la méthode exec() de l'objet $conx permet d'exécuter une requête SQL
+    $conx->exec($tableFilm); // la méthode exec() de l'objet $conx permet d'exécuter une requête SQL
 }
 //createTableFilm();
 
 
 
 // ---------------------- table users ----------------------
-function createTableUsers():void 
+function createTableUsers(): void
 {
     // creation d'une variable $conx pour stocker la connexion à la BDD
-$conx = connexionBdd();
-//définition de la requête SQL
-$tableUsers = "CREATE TABLE IF NOT EXISTS users(id_user INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    $conx = connexionBdd();
+    //définition de la requête SQL
+    $tableUsers = "CREATE TABLE IF NOT EXISTS users(id_user INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                               firstname VARCHAR(50),
                                               lastname VARCHAR(50) NOT NULL,
                                               pseudo VARCHAR(50) NOT NULL,
@@ -157,20 +157,20 @@ $tableUsers = "CREATE TABLE IF NOT EXISTS users(id_user INT(11) NOT NULL PRIMARY
                                              city VARCHAR (50) NOT NULL,
                                              country VARCHAR (50),
                                               role ENUM('ROLE_USER','ROLE_ADMIN') NOT NULL DEFAULT 'ROLE_USER')";
-     $conx->exec($tableUsers); 
+    $conx->exec($tableUsers);
 }
 //createTableUsers();
 
 //---------------- création des clés étrangères ----------------
-function foreignkey(string $tableFK, string $keyFK, string $tablePK, string $keyPK):void
+function foreignkey(string $tableFK, string $keyFK, string $tablePK, string $keyPK): void
 {
-     $conx = connexionBdd();
-     // création de clé étrangère pour la table film sous-forme de fonction avec des arguments
-     // $tableF = nom de la table
-     // $keyFk = nom de la clé étrangère
-     // $keyPK = nom de la clé primaire
-     $sql = "ALTER TABLE $tableFK ADD FOREIGN KEY ($keyFK) REFERENCES $tablePK($keyPK)";
-     $conx->exec($sql);
+    $conx = connexionBdd();
+    // création de clé étrangère pour la table film sous-forme de fonction avec des arguments
+    // $tableF = nom de la table
+    // $keyFk = nom de la clé étrangère
+    // $keyPK = nom de la clé primaire
+    $sql = "ALTER TABLE $tableFK ADD FOREIGN KEY ($keyFK) REFERENCES $tablePK($keyPK)";
+    $conx->exec($sql);
 }
 //appel de la fonction de création de clé étrangère
 // foreignkey('film', 'category_id', 'categories', 'id_categorie');
@@ -184,28 +184,28 @@ function foreignkey(string $tableFK, string $keyFK, string $tablePK, string $key
 */
 
 // fonction pour ajouter un utilisateur
-function addUser (string $lastName, string $firstName, string $pseudo, string $email, string $phone, string $mdp, string $civility, string $birthday, string $address, string $zip, string $city, string $country):void
+function addUser(string $lastName, string $firstName, string $pseudo, string $email, string $phone, string $mdp, string $civility, string $birthday, string $address, string $zip, string $city, string $country): void
 {
-     //création d'un tableau associatif
-     $data = [
-          //key => value
-          'lastName' => $lastName,
-          'firstName' => $firstName,
-          'pseudo' => $pseudo,
-          'email' => $email,
-          'phone' => $phone,
-          'mdp' => $mdp,
-          'civility' => $civility,
-          'birthday' => $birthday,
-          'address' => $address,
-          'zip' => $zip,
-          'city' => $city,
-          'country' => $country
-     ];
+    //création d'un tableau associatif
+    $data = [
+        //key => value
+        'lastName' => $lastName,
+        'firstName' => $firstName,
+        'pseudo' => $pseudo,
+        'email' => $email,
+        'phone' => $phone,
+        'mdp' => $mdp,
+        'civility' => $civility,
+        'birthday' => $birthday,
+        'address' => $address,
+        'zip' => $zip,
+        'city' => $city,
+        'country' => $country
+    ];
 
-     //Echapper les données et les traiter contre les failles JS
-     foreach ($data as $key => $value) {
-          //htmlspecialchars() convertit les caractères spéciaux en entités HTML
+    //Echapper les données et les traiter contre les failles JS
+    foreach ($data as $key => $value) {
+        //htmlspecialchars() convertit les caractères spéciaux en entités HTML
         // Exemple : < devient &lt; et > devient &gt;
         // $data['lastName'] = htmlspecialchars($lastName);
         $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); //ENT_QUOTES est une constante en PHP qui convertie les guillemets doubles et les guillemets simples en entités HTML. Exemple : la guillement simple se convertit en &#039; et la guillemet double se convertit en &quot;
@@ -219,12 +219,12 @@ function addUser (string $lastName, string $firstName, string $pseudo, string $e
             " (guillemet double) devient &quot;
 
         */
-     }
-     //connextion à la base de données
-     $pdo = connexionBdd();
-     //définition de la requête SQL
-     $sql ="INSERT INTO users( lastName, firstName, pseudo, email, phone, mdp, civility, birthday, address, zip, city, country) VALUES (:lastName, :firstName, :pseudo, :email, :phone, :mdp, :civility, :birthday, :address, :zip, :city, :country)";
-     /* Les requêtes préparer sont préconisées si vous exécutez plusieurs fois la même requête. Ainsi vous évitez au SGBD de répéter toutes les phases analyse/ interpretation / exécution de la requête (gain de performance). Les requêtes préparées sont aussi utilisées pour nettoyer les données et se prémunir des injections de type SQL.
+    }
+    //connextion à la base de données
+    $pdo = connexionBdd();
+    //définition de la requête SQL
+    $sql = "INSERT INTO users( lastName, firstName, pseudo, email, phone, mdp, civility, birthday, address, zip, city, country) VALUES (:lastName, :firstName, :pseudo, :email, :phone, :mdp, :civility, :birthday, :address, :zip, :city, :country)";
+    /* Les requêtes préparer sont préconisées si vous exécutez plusieurs fois la même requête. Ainsi vous évitez au SGBD de répéter toutes les phases analyse/ interpretation / exécution de la requête (gain de performance). Les requêtes préparées sont aussi utilisées pour nettoyer les données et se prémunir des injections de type SQL.
 
         1- On prépare la requête
         2- On lie le marqueur à la requête
@@ -233,8 +233,8 @@ function addUser (string $lastName, string $firstName, string $pseudo, string $e
     */
     $request = $pdo->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :firstName qui est vide et attend une valeur.
     $request->execute(array(
-     ':lastName'=>$data['lastName'],
-     ':firstName' => $data['firstName'],
+        ':lastName' => $data['lastName'],
+        ':firstName' => $data['firstName'],
         ':pseudo' => $data['pseudo'],
         ':email' => $data['email'],
         ':phone' => $data['phone'],
@@ -246,7 +246,7 @@ function addUser (string $lastName, string $firstName, string $pseudo, string $e
         ':city' => $data['city'],
         ':country' => $data['country']
     ));
-//execute() est une méthode qui permet d'exécuter la requête préparée. Elle prend en paramètre un tableau associatif qui contient les valeurs à injecter dans la requête.
+    //execute() est une méthode qui permet d'exécuter la requête préparée. Elle prend en paramètre un tableau associatif qui contient les valeurs à injecter dans la requête.
 
     // $request->execute($data); // cela ne fonctionne pas car les clés du tableau $data doivent être identiques aux marqueurs de la requête préparée
 }
@@ -357,6 +357,24 @@ function showCategories(string $name): mixed
     $result = $request->fetch();
     return $result;
 }
+
+function getCategoryById(int $id): ?array
+{
+    $cnx = connexionBdd();
+    $sql = "SELECT * FROM categories WHERE id_categorie = :id_categorie";
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ":id_categorie" => $id
+    ));
+    $result = $request->fetch();
+
+    return $result;
+}
+
+
+
+
+
 function showAllCategories(): mixed
 {
     $cnx = connexionBdd();
@@ -369,7 +387,7 @@ function showAllCategories(): mixed
 
 
 
-function addCategory(string $name, string $description) : void
+function addCategory(string $name, string $description): void
 {
     //sécuriser les deux variables
     $data = [
@@ -386,9 +404,9 @@ function addCategory(string $name, string $description) : void
     $request->execute($data);
 }
 
- 
+
 function deleteCategory(int $id): void
-{   
+{
     $cnx = connexionBdd();
     $sql = "DELETE FROM categories WHERE id_categorie = :id";
     $request = $cnx->prepare($sql);
@@ -399,7 +417,8 @@ function deleteCategory(int $id): void
 ##### Update category
 //on a crée au début une fonction showCategoryViaId qui permet de recuperer la category via son id et on a crée une autre fonction updateCategory qui permet de modifier la category
 
-function showCategoryViaId(int $id) :mixed{
+function showCategoryViaId(int $id): mixed
+{
 
     $cnx = connexionBdd();
     $sql = "SELECT * FROM categories WHERE id_categorie = :id";
@@ -409,14 +428,13 @@ function showCategoryViaId(int $id) :mixed{
     ));
     $result = $request->fetch();
     return $result;
-  
-  }
-  
+}
+
 //on a crée une autre fonction updateCategory qui permet de modifier la category via son id 
 function updateCategory(int $id, string $name, string $description): void
 {
     $cnx = connexionBdd();
-    $sql ="UPDATE categories SET nom_categorie = :name, description = :description WHERE id_categorie = :id";
+    $sql = "UPDATE categories SET nom_categorie = :name, description = :description WHERE id_categorie = :id";
     $request = $cnx->prepare($sql);
     $request->execute(array(
         ":name" => $name,
@@ -424,6 +442,25 @@ function updateCategory(int $id, string $name, string $description): void
         ":id" => $id
     ));
 }
+
+function categoryExist(string $name): array
+{
+    $cnx = connexionBdd();
+    $sql = 'SELECT * FROM categories WHERE name = :name';
+    $request = $cnx->prepare($sql);
+    $request->execute(array(
+        ':name' => $name
+    ));
+    $result = $request->fetchAll();
+
+    return $result;
+}
+
+
+
+
+
+
 /*
                           ╔═════════════════════════════════════════════╗
                           ║                                             ║
@@ -433,44 +470,44 @@ function updateCategory(int $id, string $name, string $description): void
                           
 */
 // fonction pour l'insertion d un film auprès de l'utilisateur
-function addFilm (int $categories, string $title, string $director, string $actors, string $ageLimit,string $duration, string $synopsis, string $date, string $image, float $price, int $stock):void
+function addFilm(int $category_id, string $title, string $director, string $actors, string $ageLimit, string $duration, string $synopsis, string $date, string $image, float $price, int $stock): void
 {
-     //création d'un tableau associatif
-     $data = [
-          //key => value
-          'categories' => $categories,
-          'title' => $title,
-          'image' => $image,
-          'director' => $director,
-          'actors' => $actors,
-          'ageLimit' => $ageLimit,
-          'duration'=> $duration,
-          'date' => $date,
-          'price' => $price,    
-          'stock' => $stock,
-          'synopsis' => $synopsis
-     ];
+    //création d'un tableau associatif
+    $data = [
+        //key => value
+        'category_id' => $category_id,
+        'title' => $title,
+        'image' => $image,
+        'director' => $director,
+        'actors' => $actors,
+        'ageLimit' => $ageLimit,
+        'duration' => $duration,
+        'date' => $date,
+        'price' => $price,
+        'stock' => $stock,
+        'synopsis' => $synopsis
+    ];
 
-     //Echapper les données et les traiter contre les failles JS
-     foreach ($data as $key => $value) {
+    //Echapper les données et les traiter contre les failles JS
+    foreach ($data as $key => $value) {
         $data[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); //ENT_QUOTES est une constante en PHP qui convertie les guillemets doubles et les guillemets simples en entités HTML. Exemple : la guillement simple se convertit en &#039; et la guillemet double se convertit en &quot;
-     }
-     //connextion à la base de données
-     $pdo = connexionBdd();
-     $sql ="INSERT INTO film ( category_id, title, director, actors, ageLimit, duration, synopsis, date, image,  price, stock) VALUES (:category_id, :title, :director, :actors, :ageLimit, :duration, :synopsis, :date, :image, :price, :stock)";
+    }
+    //connextion à la base de données
+    $pdo = connexionBdd();
+    $sql = "INSERT INTO film ( category_id, title, director, actors, ageLimit, duration, synopsis, date, image,  price, stock) VALUES (:category_id, :title, :director, :actors, :ageLimit, :duration, :synopsis, :date, :image, :price, :stock)";
     $request = $pdo->prepare($sql); //prepare() est une méthode qui permet de préparer la requête sans l'exécuter. Elle contient un marqueur :firstName qui est vide et attend une valeur.
     $request->execute(array(
-     ':category_id'=>$data['categories'],
-    ':title'=>$data['title'],
-     ':director'=>$data['director'],
-     ':actors'=>$data['actors'],
-     ':ageLimit'=>$data['ageLimit'],
-     ':duration'=>$data['duration'],
-     ':synopsis'=>$data['synopsis'],
-     ':date'=>$data['date'],
-     ':image'=>$data['image'],
-     ':price'=>$data['price'],
-     ':stock'=>$data['stock'],
+        ':category_id' => $data['category_id'],
+        ':title' => $data['title'],
+        ':director' => $data['director'],
+        ':actors' => $data['actors'],
+        ':ageLimit' => $data['ageLimit'],
+        ':duration' => $data['duration'],
+        ':synopsis' => $data['synopsis'],
+        ':date' => $data['date'],
+        ':image' => $data['image'],
+        ':price' => $data['price'],
+        ':stock' => $data['stock'],
     ));
 }
 
@@ -513,10 +550,10 @@ function allFilm(): mixed
 
 
 //update film
-function updateFilm(int $id, int $category_id, string $title, string $director, string $actors, string $ageLimit,string $duration, string $synopsis, string $date, string $image, float $price, int $stock) : void 
+function updateFilm(int $id_film, int $category_id, string $title, string $director, string $actors, string $ageLimit, string $duration, string $synopsis, string $date, string $image, float $price, int $stock): void
 {
     $cnx = connexionBdd();
-    $sql ="UPDATE film SET 
+    $sql = "UPDATE film SET 
     category_id = :category_id,
     title = :title, 
     director =:director,
@@ -543,12 +580,12 @@ function updateFilm(int $id, int $category_id, string $title, string $director, 
         ':image' => $image,
         ':price' => $price,
         ':stock' => $stock,
-        ':id_film' => $id
+        ':id_film' => $id_film
     ));
 }
 
 //show film
-function showFilm(int $id_film): mixed
+function getFilmById(int $id_film): mixed
 {
     $cnx = connexionBdd();
     $sql = "SELECT * FROM film
@@ -564,8 +601,29 @@ function showFilm(int $id_film): mixed
 }
 
 
+// Delete film
+function deleteFilm($id_film): void
+{
+    $cnx = connexionBdd();
+    $sql = "DELETE FROM film WHERE id_film = :id_film";
+    $request = $cnx->prepare($sql);
+    $request->execute([':id_film' => $id_film]);
+}
 
+function getAllFilms(): array
+{
+    $cnx = connexionBdd();
+    $sql = 'SELECT * FROM film';
+    $request = $cnx->query($sql);
+    $result = $request->fetchAll();
+    return $result;
+}
 
-
-?>
-
+function getSixFilms(): array
+{
+    $cnx = connexionBdd();
+    $sql = 'SELECT * FROM film LIMIT 6';
+    $request = $cnx->query($sql);
+    $result = $request->fetchAll();
+    return $result;
+}
